@@ -1,15 +1,11 @@
-import io.ktor.client.*
-import io.ktor.client.engine.apache.*
-import io.ktor.client.features.HttpTimeout
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.util.cio.*
-import io.ktor.utils.io.*
+import io.ktor.client.HttpClient
+import io.ktor.client.request.header
+import io.ktor.client.request.put
+import io.ktor.client.request.url
+import io.ktor.client.statement.HttpResponse
+import io.ktor.util.cio.toByteArray
 import io.ktor.utils.io.core.String
 import kotlinx.coroutines.runBlocking
-import java.io.*
-import java.net.*
 
 fun main(args: Array<String>) {
     runBlocking {
