@@ -32,3 +32,5 @@ hs_err_pid*
 
 # others
 build.properties
+/build
+/.gradle
