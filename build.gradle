@@ -24,6 +24,7 @@ dependencies {
     compile "io.ktor:ktor-client-apache:$ktor_version"
     compile "io.ktor:ktor-html-builder:$ktor_version"
     compile "ch.qos.logback:logback-classic:$logback_version"
+    compile "io.ktor:ktor-client-okhttp:$ktor_version"
 }
 
 compileKotlin {
