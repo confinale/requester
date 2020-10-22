@@ -1,3 +1,11 @@
+## Directory-based project format
+.idea/*.xml
+.idea/*/
+.idea/dataSources.ids
+!.idea/runConfigurations/
+!.idea/jsLinters/
+!.idea/dictionaries/
+
 # Compiled class file
 *.class
 

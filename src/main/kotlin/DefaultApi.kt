@@ -1,45 +1,40 @@
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
+import io.ktor.client.features.HttpTimeout
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.*
+import io.ktor.utils.io.core.String
 import kotlinx.coroutines.runBlocking
 import java.io.*
 import java.net.*
 
 fun main(args: Array<String>) {
     runBlocking {
-        val client = HttpClient(Apache) {
+        val client = HttpClient() {
             followRedirects = true
         }
-        client.getAsTempFile("http://www.kunst-bild.ch/") { file ->
-            println(file.readBytes().size)
+
+        val response: HttpResponse = client.put<HttpResponse> {
+            url("https://vstde-t.estv.admin.ch/api/md/m2m/register/bo")
+            header("Authorization", System.getenv().get("token"))
+            body = "{\n" +
+                    "   \"person\":{\n" +
+                    "      \"type\":\"natural\",\n" +
+                    "      \"firstName\":\"Christian\",\n" +
+                    "      \"lastName\":\"Brüesch\",\n" +
+                    "      \"birthDate\":\"1980-03-09\"\n" +
+                    "   },\n" +
+                    "   \"zip\":\"10115\",\n" +
+                    "   \"city\":\"Berlin\",\n" +
+                    "   \"state\":\"DE\",\n" +
+                    "   \"taxId\":{\n" +
+                    "      \"taxNumber\":\"013/345/67891\"\n" +
+                    "   }\n" +
+                    "}"
         }
+        println(String(response.content.toByteArray()))
     }
-}
-
-data class HttpClientException(val response: HttpResponse) : IOException("HTTP Error ${response.status}")
-
-suspend fun HttpClient.getAsTempFile(url: String, callback: suspend (file: File) -> Unit) {
-    val file = getAsTempFile(url)
-    try {
-        callback(file)
-    } finally {
-        file.delete()
-    }
-}
-
-suspend fun HttpClient.getAsTempFile(url: String): File {
-    val file = File.createTempFile("ktor", "http-client")
-    val response = request<HttpResponse> {
-        url(URL(url))
-        method = HttpMethod.Get
-    }
-    if (!response.status.isSuccess()) {
-        throw HttpClientException(response)
-    }
-    response.content.copyAndClose(file.writeChannel())
-    return file
 }
