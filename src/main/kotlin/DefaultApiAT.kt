@@ -1,6 +1,7 @@
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.ProxyBuilder
 import io.ktor.client.engine.http
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.util.cio.toByteArray
@@ -14,22 +15,11 @@ fun main(args: Array<String>) {
         println("proxyHost: "+proxyHost)
         val proxyPort = System.getProperty("https.proxyPort")
         println("proxyPort: "+proxyPort)
-        var url = ""
 
-        if (args.size > 1) {
-            url=args[1]
-            println("proxyConfig from arguments.")
-        }else{
-            url="https://"+proxyHost+":"+proxyPort
-        }
-
-        val httpProxy = ProxyBuilder.http(url)
-        val client = HttpClient() {
+        val client = HttpClient(OkHttp) {
             followRedirects = true
-            engine {
-                proxy = httpProxy
-            }
         }
+
         try {
             val response: HttpResponse = client.get(args[0])
             //val response: HttpResponse = client.get("https://www.formularservice.gv.at/site/fsrv/user/formular.aspx?pid=09e05dcbe1f84f51afb7b482d272accb&pn=B9d218f001088468a9727ec6fffd85b1b")
